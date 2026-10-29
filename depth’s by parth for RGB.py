@@ -1,5 +1,11 @@
+import sys
+from pathlib import Path
+
 import numpy as np
 from PIL import Image
+
+# 修正(2026-10-29): 入力画像のプレースホルダをやめ、スクリプトと同じフォルダのファイルを指す定数にする
+INPUT_IMAGE_PATH = Path(__file__).parent / 'path_to_image.jpg'
 
 def calculate_depth(focal_length, real_height, screen_height):
     """
@@ -52,7 +58,10 @@ min_depth = 500.0  # Minimum depth in mm for DoF effect
 max_depth = 3000.0  # Maximum depth in mm for DoF effect
 
 # Load the image and convert to numpy array
-image_path = 'path_to_image.jpg'
+image_path = INPUT_IMAGE_PATH
+if not image_path.exists():
+    # 修正(2026-10-29): 画像が無い場合はトレースバックではなく、置き場所を案内して終了する
+    sys.exit(f"Input image not found: {image_path} — place a JPEG image with this name next to this script and run again.")
 image = Image.open(image_path)
 image_array = np.array(image)
 
